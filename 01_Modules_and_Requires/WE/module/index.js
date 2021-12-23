@@ -1,3 +1,4 @@
-const { oneFile, twoFile } = require("./second");
-console.log(oneFile);
-console.log(twoFile);
+const fullName = require("./first");
+
+fullName.firstMiddleName();
+fullName.lastName();
