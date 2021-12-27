@@ -1,24 +1,54 @@
 function runProgram(input) {
   // Write code here
   var input = input.trim().split("\n");
-  let [n, k] = input[0].trim().split(" ").map(Number);
-  let a = input[1].trim().split(" ").map(Number);
+  let [n, key] = input[0].trim().split(" ").map(Number);
+  let arr = input[1].trim().split(" ").map(Number);
 
-  function noOfOccurence(n, a, k, low, high) {
-    let count = 0;
-    while (low <= high) {
-      let mid = Math.floor(low + (high - low) / 2);
-      if (a[mid] == k) {
-        count++;
-      } else if (k > a[mid]) {
-        low = mid + 1;
+  function noOfOccurence(n, arr, key) {
+    function ub(n, arr, key) {
+      let low = 0;
+      let high = n - 1;
+
+      while (low < high) {
+        let mid = Math.floor(low + (high - low) / 2);
+        if (key < arr[mid]) {
+          high = mid;
+        } else {
+          low = mid + 1;
+        }
+      }
+      if (arr[high] > key) {
+        return high;
+      } else if (arr[low] > key) {
+        return low;
       } else {
-        high = mid - 1;
+        return 0;
       }
     }
-    return count;
+
+    function lb(n, arr, key) {
+      let low = 0;
+      let high = n - 1;
+
+      while (low < high) {
+        let mid = Math.floor(low + (high - low) / 2);
+
+        if (key <= arr[mid]) {
+          high = mid;
+        } else {
+          low = mid + 1;
+        }
+      }
+      if (arr[low] >= key) {
+        return low;
+      } else if (arr[high] >= key) {
+        return high;
+      }
+    }
+
+    return (n = ub(n, arr, key) - lb(n, arr, key));
   }
-  console.log(noOfOccurence(n, a, k, 0, n - 1));
+  console.log(noOfOccurence(n, arr, key));
 }
 
 if (process.env.USERNAME === "coder") {
