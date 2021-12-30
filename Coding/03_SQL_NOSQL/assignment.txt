@@ -1,0 +1,67 @@
+> use assignment
+switched to db assignment
+
+<================ for creating collection name users===================>
+
+
+> db.createCollection("users")
+
+
+<================ cmd for inserting 10 documents using insert and insertMany ===================>
+
+
+> db.users.insert({"first_name":"Vinay","last_name":"Ahirwar","email":"vinay@gmail.com","gender":"mail","ip_address":1122,"age":21})
+
+
+> db.users.insertMany([{"first_name":"Pratik","last_name":"Ahir","email":"pratik@gmail.com","gender":"mail","ip_address":1222,"age":22},{"first_name":"Vishal","last_name":"Sharma","email":"viny@gmail.com","gender":"male","ip_address":1152,"age":19},{"first_name":"Vishal","last_name":"Sharma","email":"viny@gmail.com","gender":"male","ip_address":1152,"age":19},{"first_name":"Vishal","last_name":"Sharma","email":"viny@gmail.com","gender":"male","ip_address":1152,"age":19},{"first_name":"Vishal","last_name":"Sharma","email":"viny@gmail.com","gender":"male","ip_address":1152,"age":19}])
+
+> db.users.find().count()
+7
+
+> db.users.insertMany([{"first_name":"Prik","last_name":"hir","email":"prk@gmail.com","gender":"male","ip_address":1752,"age":19},{"first_name":"Vishal","last_name":"Sharma","email":"viny@gmail.com","gender":"male","ip_address":1152,"age":19},{"first_name":"Vishal","last_name":"Sharma","email":"viny@gmail.com","gender":"male","ip_address":1152,"age":19}])
+
+
+<================ cmd for finding all the documets in the users collection ===================>
+
+
+> db.users.find().pretty()
+
+
+<================ cmd for finding one document in the users collection ===================>
+
+
+> db.users.findOne({"first_name":"Tarun"})
+
+
+<===================== cmd for updating single document ====================> 
+
+
+> db.users.update({"_id" : ObjectId("61c9c10b505f45dd7cceca3c")},{$set:{"last_name":"kohli"}})
+
+
+<=================== cmd for updating multiple documents ==============>
+
+
+> db.users.updateMany({"first_name":"Vishal"},{$set: {"Nationality":"Indian"}})
+
+
+<===================== cmd for deleting single document and multiple documents ======================>
+
+
+> db.users.deleteOne({"_id" : ObjectId("61c9c606868e1d0159b3d210")})
+
+
+> db.users.remove({"first_name":"Tarun"})
+
+
+> db.users.deleteMany({"first_name":"Vishal"})
+
+<================== cmd for removing the database ===================>
+> db.remove
+assignment.remove
+> show dbs
+admin       0.000GB
+assignment  0.000GB
+config      0.000GB
+local       0.000GB
+>
