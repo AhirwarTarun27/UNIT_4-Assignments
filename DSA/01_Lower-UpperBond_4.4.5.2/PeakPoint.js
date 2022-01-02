@@ -12,7 +12,17 @@ function runProgram(input) {
   }
 }
 
-function peakPoint(n, arr) {}
+function peakPoint(n, arr) {
+  let low = 0;
+  let high = n - 1;
+
+  while (low <= high) {
+    let mid = Math.floor(low + (high - low) / 2);
+    if (arr[mid] > arr[mid - 1]) {
+      return arr[mid];
+    }
+  }
+}
 
 if (process.env.USERNAME === "coder") {
   runProgram(`2

@@ -15,14 +15,7 @@ const connect = () => {
 
 const sectionSchema = new mongoose.Schema(
   {
-    sectionNo: { type: Number, required: true },
-    book_ids: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "book",
-        required: true,
-      },
-    ],
+    language: { type: String, required: true },
   },
   {
     versionKey: false,
@@ -32,11 +25,11 @@ const sectionSchema = new mongoose.Schema(
 
 const Section = mongoose.model("section", sectionSchema);
 
-// Author schema and model
+//Author schema
+
 const authorSchema = new mongoose.Schema(
   {
     first_name: { type: String, required: true },
-    middle_name: { type: String, required: false },
     last_name: { type: String, required: true },
   },
   {
@@ -47,32 +40,43 @@ const authorSchema = new mongoose.Schema(
 
 const Author = mongoose.model("author", authorSchema);
 
-// Book schema and model
+// Books schema
 
-const bookSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  body: { type: String, required: true },
-  author_id: [
-    {
+const booksSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    body: { type: String, required: true },
+    author_id: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "author",
+        required: true,
+      },
+    ],
+    section_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "author",
+      ref: "section",
       required: true,
     },
-  ],
-  section_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "section",
-    required: true,
+    checked: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
   },
-});
+  {
+    versionKey: false,
+    timestamps: true,
+  }
+);
 
-const Book = mongoose.model("book", bookSchema);
+const Book = mongoose.model("book", booksSchema);
 
 const app = express();
 
 app.use(express.json());
 
-// Section CRUD
+//CURD for section
 
 app.post("/sections", async (req, res) => {
   try {
@@ -80,9 +84,7 @@ app.post("/sections", async (req, res) => {
 
     return res.status(201).send(section);
   } catch (err) {
-    return res.status(500).send({
-      error: err.message,
-    });
+    return res.status(500).send(err.message);
   }
 });
 
@@ -90,15 +92,37 @@ app.get("/sections", async (req, res) => {
   try {
     const sections = await Section.find().lean().exec();
 
-    return res.send(sections);
+    return res.status(201).send(sections);
   } catch (err) {
-    return res.status(500).json({
-      error: err.message,
-    });
+    return res.status(500).send(err.message);
   }
 });
 
-// Book CRUD
+// app.get("/sections/:id", async (req, res) => {
+//   try {
+//     const section = await Section.findById(req.params.id).populate({path: ""}) lean().exec();
+
+//     return res.status(201).send(section);
+//   } catch (err) {
+//     return res.status(500).send(err.message);
+//   }
+// });
+
+// CRUD for books
+
+app.get("/books", async (req, res) => {
+  try {
+    const books = await Book.find()
+      .populate({ path: "author_id", select: { first_name: 1, last_name: 1 } })
+      .populate({ path: "section_id", select: { language: 1 } })
+      .lean()
+      .exec();
+
+    return res.status(201).send(books);
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+});
 
 app.post("/books", async (req, res) => {
   try {
@@ -106,31 +130,130 @@ app.post("/books", async (req, res) => {
 
     return res.status(201).send(book);
   } catch (err) {
-    return res.status(500).send({ error: err.message });
+    return res.status(500).send(err.message);
   }
 });
 
-// Author CRUD
+app.delete("/books/:id", async (req, res) => {
+  try {
+    const book = await Book.findByIdAndDelete(req.params.id).lean().exec();
+
+    return res.status(201).send(book);
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+});
+
+app.patch("/books/:id", async (req, res) => {
+  try {
+    const book = await Book.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    })
+      .lean()
+      .exec();
+
+    return res.status(201).send(book);
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+});
+
+//CRUD for Author
 
 app.post("/authors", async (req, res) => {
   try {
-    const authors = await Author.create(req.body);
+    const author = await Author.create(req.body);
 
-    return res.send(authors);
+    return res.status(201).send(author);
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    return res.status(500).send(err.message);
   }
 });
 
 app.get("/authors", async (req, res) => {
   try {
-    const author = await Author.find().lean().exec();
+    const authors = await Author.find().lean().exec();
 
-    return res.send(users);
+    return res.status(201).send(authors);
   } catch (err) {
-    return res.send(500).json({
-      error: err.message,
-    });
+    return res.status(500).send(err.message);
+  }
+});
+
+// finding the book that are checkedout
+
+app.get("/checkedout", async (req, res) => {
+  try {
+    const check = await Book.find({ checked: { $eq: false } })
+      .lean()
+      .exec();
+
+    return res.status(201).send(check);
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+});
+
+// finding all books written by an author
+
+app.get("/booksbyauthor/:id", async (req, res) => {
+  try {
+    const booksbyauthor = await Book.find({ author_id: { $eq: req.params.id } })
+      .populate({ path: "author_id", select: { first_name: 1, last_name: 1 } })
+      .populate({ path: "section_id", select: { language: 1 } })
+      .lean()
+      .exec();
+
+    return res.status(201).send(booksbyauthor);
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+});
+
+// finding books in a section
+
+app.get("/sectionbooks/:id", async (req, res) => {
+  try {
+    const sectionbooks = await Book.find({ section_id: { $eq: req.params.id } })
+      .lean()
+      .exec();
+
+    return res.status(201).send(sectionbooks);
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+});
+
+// finding books which is not checked out
+
+app.get("/notcheckedout", async (req, res) => {
+  try {
+    const notcheckedout = await Book.find({ checked: { $eq: false } })
+      .lean()
+      .exec();
+
+    return res.status(201).send(notcheckedout);
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+});
+
+// finding books of one author inside a section-----
+
+app.get("/booksbyauthor/:id1/:id2", async (req, res) => {
+  try {
+    const booksbyauthor = await Book.find({
+      $and: [
+        { section_id: { $eq: req.params.id1 } },
+        { author_id: { $eq: req.params.id2 } },
+      ],
+    })
+      .lean()
+      .exec();
+
+    return res.status(201).send(booksbyauthor);
+  } catch (err) {
+    return res.status(500).send(err.message);
   }
 });
 
