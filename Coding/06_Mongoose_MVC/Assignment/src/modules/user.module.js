@@ -5,7 +5,7 @@ const userschema = new mongoose.Schema(
     first_name: { type: String, required: true },
     last_name: { type: String, required: true },
     gender: { type: String, required: true, default: "Male" },
-    date_of_birth: { type: Date, require: true },
+    date_of_birth: { type: Date, required: true },
     student_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "student",

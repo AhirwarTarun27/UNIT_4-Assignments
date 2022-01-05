@@ -4,7 +4,7 @@ const express = require("express");
 
 const router = express.Router();
 
-router.post("/users", async (req, res) => {
+router.post("", async (req, res) => {
   try {
     const user = await User.create(req.body);
 
@@ -14,7 +14,7 @@ router.post("/users", async (req, res) => {
   }
 });
 
-router.get("/users", async (req, res) => {
+router.get("", async (req, res) => {
   try {
     const users = await User.find().lean().exec();
 
@@ -24,14 +24,14 @@ router.get("/users", async (req, res) => {
   }
 });
 
-router.get("/users/:id", async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id).lean().exec();
+// router.get("/:id", async (req, res) => {
+//   try {
+//     const user = await User.findById(req.params.id).lean().exec();
 
-    return res.status(201).send(user);
-  } catch (err) {
-    return res.status(500).send(err.message);
-  }
-});
+//     return res.status(201).send(user);
+//   } catch (err) {
+//     return res.status(500).send(err.message);
+//   }
+// });
 
 module.exports = router;

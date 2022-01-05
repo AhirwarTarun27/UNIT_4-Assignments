@@ -5,7 +5,7 @@ const { builtinModules } = require("module");
 
 const router = express.Router();
 
-router.post("/students", async (req, res) => {
+router.post("", async (req, res) => {
   try {
     const student = await Student.create(req.body);
 
@@ -15,7 +15,7 @@ router.post("/students", async (req, res) => {
   }
 });
 
-router.get("/students", async (req, res) => {
+router.get("", async (req, res) => {
   try {
     const students = await Student.find().lean().exec();
 
@@ -25,7 +25,7 @@ router.get("/students", async (req, res) => {
   }
 });
 
-router.get("/students/:id", async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
     const students = await Student.findById(req.params.id).lean().exec();
 
