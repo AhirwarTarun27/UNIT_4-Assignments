@@ -15,12 +15,11 @@ router.post("", async (req, res) => {
 
 router.get("", async (req, res) => {
   try {
+    console.log(Evaluation);
     const evaluations = await Evaluation.find()
-      .select("evaluation_topic")
-      .populate("evaluation_topic")
+      .populate({ path: "user_id", select: { first_name: 1, last_name: 1 } })
       .lean()
       .exec();
-
     return res.status(200).send(evaluations);
   } catch (err) {
     return res.status(500).send(err.message);

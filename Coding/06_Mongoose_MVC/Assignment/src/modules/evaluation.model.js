@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const evalschema = new mongoose.Schema(
   {
     evaluation_topic: { type: mongoose.Schema.Types.ObjectId, required: true },
-    evaluation_score: { type: Number, required: true, default: 0 },
+    evaluation_score: { type: Number, required: true },
     date_of_eval: { type: Date, required: true },
     instructor: { type: String, required: true },
     user_id: { type: mongoose.Schema.Types.ObjectId, required: true },
