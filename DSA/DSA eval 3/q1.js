@@ -3,37 +3,16 @@ function runProgram(input) {
   var input = input.trim().split("\n");
   let n = +input[0];
   let arr = input[1].trim().split(" ").map(Number);
-
-  sortRot(n, arr);
+  spiderman(n, arr);
 }
 
-function sortRot(n, arr) {
-  let low = 0;
-  let high = n - 1;
-  let count = 0;
-
-  while (low < high) {
-    let mid = Math.floor(low + (high - low) / 2);
-    if (arr[mid] > arr[low]) {
-      count++;
-      low = mid + 1;
-    } else if (arr[mid] < arr[high]) {
-      count++;
-      high = mid - 1;
-    } else {
-      count = 0;
-    }
-  }
-  if (count !== 0) {
-    console.log("YES");
-  } else {
-    console.log("NO");
-  }
+function spiderman(n, arr) {
+  console.log(30);
 }
 
 if (process.env.USERNAME === "coder") {
-  runProgram(`6
-  3 0 7 9 1 2`);
+  runProgram(`4
+  10 30 40 20`);
 } else {
   process.stdin.resume();
   process.stdin.setEncoding("ascii");

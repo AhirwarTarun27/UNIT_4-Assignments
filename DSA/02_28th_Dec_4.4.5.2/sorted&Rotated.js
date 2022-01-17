@@ -1,40 +1,40 @@
 function runProgram(input) {
   // Write code here
   var input = input.trim().split("\n");
-  let n = +input[0];
+  let [n, k] = input[0].trim().split(" ").map(Number);
   let arr = input[1].trim().split(" ").map(Number);
 
-  function minNo(n, arr) {
+  function sortedRotated(n, k, arr) {
     let low = 0;
     let high = n - 1;
     while (low <= high) {
-      let mid = Math.floor(low + (high - low) / 2);
-
-      if (arr[mid] < arr[mid - 1] || arr[mid] == arr[high]) {
-        high--;
-        return arr[mid];
-      } else if (arr[mid] > arr[mid + 1]) {
-        return arr[mid + 1];
+      let mid = Math.floor(low + high - low / 2);
+      if (arr[mid] == k) {
+        return mid;
       }
-
       if (arr[low] < arr[mid]) {
-        low = mid + 1;
+        if (k >= arr[low] && k < arr[mid]) {
+          high = mid - 1;
+        } else {
+          low = mid + 1;
+        }
       } else {
-        high = mid - 1;
+        if (k > arr[mid] && k <= arr[high]) {
+          low = mid + 1;
+        } else {
+          high = mid - 1;
+        }
       }
-      // if (arr[mid] == arr[high]) {
-      //   high--;
-      // } else if (arr[mid] == arr[low]) {
-      //   low++;
-      // }
     }
+    return -1;
   }
-  console.log(minNo(n, arr));
+
+  console.log(sortedRotated(n, k, arr));
 }
 
 if (process.env.USERNAME === "coder") {
-  runProgram(`7
-  1 1 1 1 1 1 1`);
+  runProgram(`5 8
+  3 4 5 1 2`);
 } else {
   process.stdin.resume();
   process.stdin.setEncoding("ascii");
